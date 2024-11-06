@@ -39,6 +39,9 @@
             margin-bottom: 10px;
             border: 1px solid #ddd;
         }
+        #searchBox {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -72,6 +75,11 @@
         <p id="remainingProtein">Protein: 0g</p>
         <p id="remainingCarbs">Carbs: 0g</p>
         <p id="remainingFat">Fat: 0g</p>
+    </div>
+
+    <!-- Search Bar -->
+    <div>
+        <input type="text" id="searchBox" placeholder="Search Food" oninput="filterFoodList()">
     </div>
 
     <!-- Food List Display -->
@@ -108,7 +116,7 @@
             foodList = JSON.parse(localStorage.getItem('foodList')) || [];
         }
 
-        // Get the form, remaining values section, and reset button elements
+        // Get the form, remaining values section, search box, and reset button elements
         const foodForm = document.getElementById('foodForm');
         const remainingCalories = document.getElementById('remainingCalories');
         const remainingProtein = document.getElementById('remainingProtein');
@@ -116,6 +124,7 @@
         const remainingFat = document.getElementById('remainingFat');
         const foodListContainer = document.getElementById('foodListContainer');
         const resetButton = document.getElementById('resetButton');
+        const searchBox = document.getElementById('searchBox');
 
         // Update the remaining values in the display
         function updateRemainingValues() {
@@ -190,10 +199,10 @@
         });
 
         // Render the food list
-        function renderFoodList() {
+        function renderFoodList(filteredFoodList = foodList) {
             foodListContainer.innerHTML = '';  // Clear existing list
 
-            foodList.forEach((food, index) => {
+            filteredFoodList.forEach((food, index) => {
                 const foodItem = document.createElement('div');
                 foodItem.classList.add('food-item');
                 foodItem.innerHTML = `
@@ -202,6 +211,13 @@
                 `;
                 foodListContainer.appendChild(foodItem);
             });
+        }
+
+        // Filter the food list based on the search query
+        function filterFoodList() {
+            const searchTerm = searchBox.value.toLowerCase();
+            const filteredFoodList = foodList.filter(food => food.name.toLowerCase().includes(searchTerm));
+            renderFoodList(filteredFoodList);
         }
 
         // Initial render of food list
@@ -213,6 +229,7 @@
 
 </body>
 </html>
+
 
 
 
