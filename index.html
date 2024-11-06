@@ -7,23 +7,17 @@
 </head>
 <body>
     <h1>Calorie and Fitness Tracker</h1>
-
     <form id="calorieForm">
         <label for="foodItem">Enter food item:</label><br>
         <input type="text" id="foodItem" name="foodItem" required><br><br>
-
         <label for="calories">Enter calories:</label><br>
         <input type="number" id="calories" name="calories" required><br><br>
-
         <input type="submit" value="Submit">
     </form>
-
     <p id="totalCalories">Total Calories: 0</p>
-
     <script>
         // JavaScript to calculate total calories
         let totalCalories = 0;
-
         document.getElementById('calorieForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const calories = parseInt(document.getElementById('calories').value);
