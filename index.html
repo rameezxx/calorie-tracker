@@ -7,6 +7,8 @@
 </head>
 <body>
     <h1>Calorie and Fitness Tracker</h1>
+
+    <!-- Form to add food item and calories -->
     <form id="calorieForm">
         <label for="foodItem">Enter food item:</label><br>
         <input type="text" id="foodItem" name="foodItem" required><br><br>
@@ -14,15 +16,44 @@
         <input type="number" id="calories" name="calories" required><br><br>
         <input type="submit" value="Submit">
     </form>
+
+    <!-- Displaying total calories -->
     <p id="totalCalories">Total Calories: 0</p>
+
+    <!-- List of food entries -->
+    <h2>Food Entries:</h2>
+    <ul id="foodList"></ul>
+
     <script>
-        // JavaScript to calculate total calories
         let totalCalories = 0;
+        const foodList = [];
+
+        // Handle form submission
         document.getElementById('calorieForm').addEventListener('submit', function(event) {
             event.preventDefault();
+
+            // Get food item and calories from the form
+            const foodItem = document.getElementById('foodItem').value;
             const calories = parseInt(document.getElementById('calories').value);
+
+            // Add to total calories
             totalCalories += calories;
+
+            // Add to food list
+            foodList.push({ foodItem, calories });
+
+            // Update the displayed total calories
             document.getElementById('totalCalories').textContent = 'Total Calories: ' + totalCalories;
+
+            // Update the food list display
+            const foodListElement = document.getElementById('foodList');
+            const listItem = document.createElement('li');
+            listItem.textContent = `${foodItem}: ${calories} calories`;
+            foodListElement.appendChild(listItem);
+
+            // Clear form fields after submission
+            document.getElementById('foodItem').value = '';
+            document.getElementById('calories').value = '';
         });
     </script>
 </body>
