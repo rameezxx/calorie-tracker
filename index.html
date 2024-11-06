@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calorie Tracker</title>
-
     <style>
+        /* Basic styling for the website */
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
             background-color: #f4f4f9;
             color: #333;
             margin: 0;
@@ -52,6 +52,7 @@
             background-color: #0056b3;
         }
 
+        /* Progress bar styling */
         .progress-bar {
             width: 300px;
             height: 25px;
@@ -65,24 +66,12 @@
             background-color: #4caf50;
             width: 0%;
         }
-
-        .nutrition-info {
-            margin-top: 20px;
-            text-align: left;
-        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- Form to set goal -->
-        <form>
-            <label for="goal-input">Set Daily Calorie Goal:</label>
-            <input type="number" id="goal-input" placeholder="Enter your goal" />
-            <button type="button" onclick="setGoal()">Set Goal</button>
-        </form>
-
-        <!-- Form to enter calories, protein, and carbs -->
+        <!-- Form to enter calorie, protein, and carb info -->
         <form>
             <label for="calories-input">Enter Calories:</label>
             <input type="number" id="calories-input" placeholder="Enter calories" />
@@ -96,66 +85,34 @@
             <button type="button" onclick="updateProgressBar()">Update Progress</button>
         </form>
 
-        <!-- Progress bar -->
+        <!-- Progress Bar -->
         <div class="progress-bar">
             <div class="progress-bar-filled" id="progress"></div>
         </div>
 
-        <div id="calories-left"></div> <!-- Display calories left -->
-
-        <div class="nutrition-info" id="nutrition-info">
-            <p id="protein-left"></p>
-            <p id="carbs-left"></p>
-        </div>
     </div>
 
     <script>
-        let goal = 2000; // Default goal
-        let proteinGoal = 150; // Protein goal in grams
-        let carbsGoal = 250; // Carbs goal in grams
-
-        let caloriesLeft = 0;
-        let proteinLeft = proteinGoal;
-        let carbsLeft = carbsGoal;
-
-        // Function to set the user's calorie goal
-        function setGoal() {
-            const goalInput = document.getElementById("goal-input").value;
-            if (goalInput && !isNaN(goalInput)) {
-                goal = parseInt(goalInput);
-                caloriesLeft = goal;
-                alert(`Calorie goal set to ${goal} calories!`);
-            } else {
-                alert("Please enter a valid calorie goal.");
-            }
-        }
-
-        // Function to update the progress bar
+        // Function to update progress based on entered values
         function updateProgressBar() {
+            const goalCalories = 2000; // Example goal calories
             const enteredCalories = parseInt(document.getElementById("calories-input").value);
             const enteredProtein = parseInt(document.getElementById("protein-input").value);
             const enteredCarbs = parseInt(document.getElementById("carbs-input").value);
 
-            if (isNaN(enteredCalories) || enteredCalories < 0) {
-                alert("Please enter a valid calorie value.");
-                return;
-            }
+            // For debugging, log the entered values
+            console.log(`Calories: ${enteredCalories}, Protein: ${enteredProtein}, Carbs: ${enteredCarbs}`);
 
-            // Calculate progress for calories
-            const progressPercentage = (enteredCalories / goal) * 100;
+            // Calculate progress based on calories
+            const progressPercentage = (enteredCalories / goalCalories) * 100;
+
+            // Set progress bar width (limit to 100%)
             const progressBar = document.getElementById("progress");
-            progressBar.style.width = `${Math.min(progressPercentage, 100)}%`;
+            progressBar.style.width = `${Math.min(progressPercentage, 100)}%`; // Limit to 100%
 
-            // Update remaining calories
-            caloriesLeft = goal - enteredCalories;
-            document.getElementById("calories-left").textContent = `Calories Left: ${Math.max(caloriesLeft, 0)} kcal`;
-
-            // Update protein and carbs left
-            proteinLeft = proteinGoal - enteredProtein;
-            carbsLeft = carbsGoal - enteredCarbs;
-
-            document.getElementById("protein-left").textContent = `Protein Left: ${Math.max(proteinLeft, 0)} g`;
-            document.getElementById("carbs-left").textContent = `Carbs Left: ${Math.max(carbsLeft, 0)} g`;
+            // Additional feature: Display values dynamically (optional)
+            // For example, you could show the remaining calories in the progress bar container
+            // You could also display the entered protein and carbs somewhere else in the UI.
         }
     </script>
 
