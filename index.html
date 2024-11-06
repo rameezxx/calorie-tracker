@@ -6,6 +6,9 @@
     <title>Calorie Tracker</title>
 </head>
 <body>
+    <h1>Welcome to the Calorie Tracker!</h1>
+    <p>This is a simple webpage to track your daily calories and fitness goals.</p>
+
     <h1>Calorie and Fitness Tracker</h1>
 
     <!-- Form to add food item and calories -->
@@ -20,15 +23,23 @@
     <!-- Displaying total calories -->
     <p id="totalCalories">Total Calories: 0</p>
 
+    <!-- Set daily calorie goal -->
+    <label for="goalCalories">Set daily calorie goal:</label><br>
+    <input type="number" id="goalCalories" name="goalCalories" placeholder="e.g. 2000"><br><br>
+
+    <!-- Progress bar for goal -->
+    <h3>Calorie Goal Progress</h3>
+    <progress id="progressBar" value="0" max="100"></progress>
+
     <!-- List of food entries -->
     <h2>Food Entries:</h2>
     <ul id="foodList"></ul>
 
     <script>
         let totalCalories = 0;
+        let dailyGoal = 0;  // Default goal
         const foodList = [];
 
-        // Handle form submission
         document.getElementById('calorieForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
@@ -51,9 +62,26 @@
             listItem.textContent = `${foodItem}: ${calories} calories`;
             foodListElement.appendChild(listItem);
 
+            // Update progress bar based on goal
+            updateProgressBar();
+
             // Clear form fields after submission
             document.getElementById('foodItem').value = '';
             document.getElementById('calories').value = '';
+        });
+
+        // Function to update the progress bar based on goal
+        function updateProgressBar() {
+            if (dailyGoal > 0) {
+                const progress = (totalCalories / dailyGoal) * 100;
+                document.getElementById('progressBar').value = progress;
+            }
+        }
+
+        // Set the daily goal when the user inputs it
+        document.getElementById('goalCalories').addEventListener('change', function() {
+            dailyGoal = parseInt(this.value);
+            updateProgressBar(); // Recalculate progress immediately when goal is set
         });
     </script>
 </body>
