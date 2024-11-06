@@ -42,11 +42,27 @@
         #searchBox {
             margin-bottom: 20px;
         }
+        .alert {
+            display: none;
+            padding: 10px;
+            margin: 10px 0;
+            color: white;
+        }
+        .alert-success {
+            background-color: #4CAF50;
+        }
+        .alert-danger {
+            background-color: #f44336;
+        }
     </style>
 </head>
 <body>
 
     <h1>Food Tracker</h1>
+
+    <!-- Alert Messages -->
+    <div id="alertSuccess" class="alert alert-success">Food added successfully!</div>
+    <div id="alertReset" class="alert alert-danger">All data reset successfully!</div>
 
     <!-- Food Entry Form -->
     <form id="foodForm">
@@ -116,7 +132,7 @@
             foodList = JSON.parse(localStorage.getItem('foodList')) || [];
         }
 
-        // Get the form, remaining values section, search box, and reset button elements
+        // Get the form, remaining values section, search box, reset button, and alert elements
         const foodForm = document.getElementById('foodForm');
         const remainingCalories = document.getElementById('remainingCalories');
         const remainingProtein = document.getElementById('remainingProtein');
@@ -125,6 +141,8 @@
         const foodListContainer = document.getElementById('foodListContainer');
         const resetButton = document.getElementById('resetButton');
         const searchBox = document.getElementById('searchBox');
+        const alertSuccess = document.getElementById('alertSuccess');
+        const alertReset = document.getElementById('alertReset');
 
         // Update the remaining values in the display
         function updateRemainingValues() {
@@ -141,6 +159,15 @@
             localStorage.setItem('totalCarbs', totalCarbs);
             localStorage.setItem('totalFat', totalFat);
             localStorage.setItem('foodList', JSON.stringify(foodList));
+        }
+
+        // Show success alert
+        function showAlert(message, alertElement) {
+            alertElement.textContent = message;
+            alertElement.style.display = 'block';
+            setTimeout(() => {
+                alertElement.style.display = 'none';
+            }, 2000);
         }
 
         // Add food entry to the totals
@@ -168,8 +195,12 @@
                 fat: fat
             });
 
-            // Clear the form fields
+            // Clear the form fields and refocus on food name input
             foodForm.reset();
+            document.getElementById('food').focus();
+
+            // Show success alert
+            showAlert('Food added successfully!', alertSuccess);
 
             // Update the remaining values and save to localStorage
             updateRemainingValues();
@@ -196,6 +227,9 @@
 
             // Clear the food list display
             foodListContainer.innerHTML = '';
+
+            // Show reset alert
+            showAlert('All data reset successfully!', alertReset);
         });
 
         // Render the food list
@@ -213,22 +247,21 @@
             });
         }
 
-        // Filter the food list based on the search query
+        // Filter the food list based on the search term
         function filterFoodList() {
             const searchTerm = searchBox.value.toLowerCase();
-            const filteredFoodList = foodList.filter(food => food.name.toLowerCase().includes(searchTerm));
-            renderFoodList(filteredFoodList);
+            const filteredList = foodList.filter(food => food.name.toLowerCase().includes(searchTerm));
+            renderFoodList(filteredList);
         }
 
-        // Initial render of food list
+        // Initial render of food list and remaining values on page load
         renderFoodList();
-
-        // Update remaining values on page load
         updateRemainingValues();
     </script>
 
 </body>
 </html>
+
 
 
 
