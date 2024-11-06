@@ -5,77 +5,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calorie Tracker</title>
 
-    <!-- Add the CSS code here inside the <style> tags -->
     <style>
         /* Global styles */
         body {
-            font-family: 'Arial', sans-serif; /* A simple and clean font */
-            background-color: #f4f4f9; /* Light gray background for a soft look */
-            color: #333; /* Dark text color for good contrast */
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
             margin: 0;
             padding: 0;
-            display: flex; /* Flexbox to center content */
-            justify-content: center; /* Horizontally center the content */
-            align-items: center; /* Vertically center the content */
-            height: 100vh; /* Full viewport height */
-            text-align: center; /* Center text inside elements */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        /* Container for form and progress bar */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         /* Form styles */
         form {
-            background-color: #fff; /* White background for the form */
-            padding: 20px; /* Space inside the form */
-            border-radius: 8px; /* Rounded corners */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow to give a card effect */
-            width: 300px; /* Limit form width to make it manageable */
-            margin: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px; /* Set a fixed width for the form */
+            margin-bottom: 20px; /* Space below the form */
         }
 
-        /* Input field and button styles */
-        input[type="text"], input[type="number"], button {
-            width: 100%; /* Make inputs and buttons fill the available space */
-            padding: 10px; /* Add some space inside the fields */
-            margin: 10px 0; /* Vertical spacing between elements */
-            border-radius: 4px; /* Slightly rounded corners */
-            border: 1px solid #ddd; /* Light border */
+        input[type="number"], button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ddd;
         }
 
         button {
-            background-color: #007BFF; /* Blue button background */
-            color: white; /* White text on button */
-            cursor: pointer; /* Pointer cursor on hover */
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
         }
 
         button:hover {
-            background-color: #0056b3; /* Darker blue when button is hovered */
+            background-color: #0056b3;
         }
 
-        /* Progress bar styling */
+        /* Progress bar container */
         .progress-bar {
-            width: 100%; /* Full width of the container */
-            height: 25px; /* Set a fixed height for the progress bar */
-            background-color: #ddd; /* Light gray background for the progress bar container */
-            border-radius: 12px; /* Rounded corners for the progress bar container */
-            overflow: hidden; /* Ensure the inner progress does not go beyond the border */
+            width: 300px; /* Match the width of the form */
+            height: 25px;
+            background-color: #ddd;
+            border-radius: 12px;
+            overflow: hidden;
         }
 
+        /* Progress bar fill */
         .progress-bar-filled {
-            height: 100%; /* Full height of the container */
-            background-color: #4caf50; /* Green color for progress */
-            width: 0%; /* Initial progress at 0% */
+            height: 100%;
+            background-color: #4caf50;
+            width: 0%;
         }
     </style>
 </head>
 <body>
-    <!-- Your existing HTML content, like the form and progress bar, goes here -->
-    <form>
-        <label for="calories-input">Enter Calories:</label>
-        <input type="number" id="calories-input" placeholder="Enter calories" />
-        <button type="button" onclick="updateProgressBar()">Update Progress</button>
-    </form>
 
-    <div class="progress-bar">
-        <div class="progress-bar-filled" id="progress"></div>
+    <div class="container">
+        <!-- Form -->
+        <form>
+            <label for="calories-input">Enter Calories:</label>
+            <input type="number" id="calories-input" placeholder="Enter calories" />
+            <button type="button" onclick="updateProgressBar()">Update Progress</button>
+        </form>
+
+        <!-- Progress bar -->
+        <div class="progress-bar">
+            <div class="progress-bar-filled" id="progress"></div>
+        </div>
     </div>
 
     <script>
@@ -83,12 +93,12 @@
         function updateProgressBar() {
             const goal = 2000; // Example daily calorie goal
             const enteredCalories = parseInt(document.getElementById("calories-input").value);
-
             const progressPercentage = (enteredCalories / goal) * 100;
 
             const progressBar = document.getElementById("progress");
             progressBar.style.width = `${Math.min(progressPercentage, 100)}%`; // Limit to 100%
         }
     </script>
+
 </body>
 </html>
