@@ -65,6 +65,11 @@
             background-color: #4caf50;
             width: 0%;
         }
+
+        .nutrition-info {
+            margin-top: 20px;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
@@ -77,10 +82,17 @@
             <button type="button" onclick="setGoal()">Set Goal</button>
         </form>
 
-        <!-- Form to enter calories -->
+        <!-- Form to enter calories, protein, and carbs -->
         <form>
             <label for="calories-input">Enter Calories:</label>
             <input type="number" id="calories-input" placeholder="Enter calories" />
+            
+            <label for="protein-input">Enter Protein (g):</label>
+            <input type="number" id="protein-input" placeholder="Enter protein" />
+            
+            <label for="carbs-input">Enter Carbs (g):</label>
+            <input type="number" id="carbs-input" placeholder="Enter carbs" />
+            
             <button type="button" onclick="updateProgressBar()">Update Progress</button>
         </form>
 
@@ -90,39 +102,60 @@
         </div>
 
         <div id="calories-left"></div> <!-- Display calories left -->
+
+        <div class="nutrition-info" id="nutrition-info">
+            <p id="protein-left"></p>
+            <p id="carbs-left"></p>
+        </div>
     </div>
 
     <script>
         let goal = 2000; // Default goal
+        let proteinGoal = 150; // Protein goal in grams
+        let carbsGoal = 250; // Carbs goal in grams
+
         let caloriesLeft = 0;
+        let proteinLeft = proteinGoal;
+        let carbsLeft = carbsGoal;
 
         // Function to set the user's calorie goal
         function setGoal() {
             const goalInput = document.getElementById("goal-input").value;
             if (goalInput && !isNaN(goalInput)) {
                 goal = parseInt(goalInput);
-                caloriesLeft = goal; // Reset remaining calories
-                alert(`Goal set to ${goal} calories!`);
+                caloriesLeft = goal;
+                alert(`Calorie goal set to ${goal} calories!`);
             } else {
-                alert("Please enter a valid goal.");
+                alert("Please enter a valid calorie goal.");
             }
         }
 
         // Function to update the progress bar
         function updateProgressBar() {
             const enteredCalories = parseInt(document.getElementById("calories-input").value);
+            const enteredProtein = parseInt(document.getElementById("protein-input").value);
+            const enteredCarbs = parseInt(document.getElementById("carbs-input").value);
+
             if (isNaN(enteredCalories) || enteredCalories < 0) {
                 alert("Please enter a valid calorie value.");
                 return;
             }
 
+            // Calculate progress for calories
             const progressPercentage = (enteredCalories / goal) * 100;
             const progressBar = document.getElementById("progress");
             progressBar.style.width = `${Math.min(progressPercentage, 100)}%`;
 
-            // Calculate and display remaining calories
+            // Update remaining calories
             caloriesLeft = goal - enteredCalories;
             document.getElementById("calories-left").textContent = `Calories Left: ${Math.max(caloriesLeft, 0)} kcal`;
+
+            // Update protein and carbs left
+            proteinLeft = proteinGoal - enteredProtein;
+            carbsLeft = carbsGoal - enteredCarbs;
+
+            document.getElementById("protein-left").textContent = `Protein Left: ${Math.max(proteinLeft, 0)} g`;
+            document.getElementById("carbs-left").textContent = `Carbs Left: ${Math.max(carbsLeft, 0)} g`;
         }
     </script>
 
