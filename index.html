@@ -4,85 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calorie Tracker</title>
-</head>
-<body>
-    <h1>Welcome to the Calorie Tracker!</h1>
-    <p>This is a simple webpage to track your daily calories and fitness goals.</p>
 
-    <h1>Calorie and Fitness Tracker</h1>
-
-    <!-- Form to add food item and calories -->
-    <form id="calorieForm">
-        <label for="foodItem">Enter food item:</label><br>
-        <input type="text" id="foodItem" name="foodItem" required><br><br>
-        <label for="calories">Enter calories:</label><br>
-        <input type="number" id="calories" name="calories" required><br><br>
-        <input type="submit" value="Submit">
-    </form>
-
-    <!-- Displaying total calories -->
-    <p id="totalCalories">Total Calories: 0</p>
-
-    <!-- Set daily calorie goal -->
-    <label for="goalCalories">Set daily calorie goal:</label><br>
-    <input type="number" id="goalCalories" name="goalCalories" placeholder="e.g. 2000"><br><br>
-
-    <!-- Progress bar for goal -->
-    <h3>Calorie Goal Progress</h3>
-    <progress id="progressBar" value="0" max="100"></progress>
-
-    <!-- List of food entries -->
-    <h2>Food Entries:</h2>
-    <ul id="foodList"></ul>
-
-    <script>
-        let totalCalories = 0;
-        let dailyGoal = 0;  // Default goal
-        const foodList = [];
-
-        document.getElementById('calorieForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            // Get food item and calories from the form
-            const foodItem = document.getElementById('foodItem').value;
-            const calories = parseInt(document.getElementById('calories').value);
-
-            // Add to total calories
-            totalCalories += calories;
-
-            // Add to food list
-            foodList.push({ foodItem, calories });
-
-            // Update the displayed total calories
-            document.getElementById('totalCalories').textContent = 'Total Calories: ' + totalCalories;
-
-            // Update the food list display
-            const foodListElement = document.getElementById('foodList');
-            const listItem = document.createElement('li');
-            listItem.textContent = `${foodItem}: ${calories} calories`;
-            foodListElement.appendChild(listItem);
-
-            // Update progress bar based on goal
-            updateProgressBar();
-
-            // Clear form fields after submission
-            document.getElementById('foodItem').value = '';
-            document.getElementById('calories').value = '';
-        });
-
-        // Function to update the progress bar based on goal
-        function updateProgressBar() {
-            if (dailyGoal > 0) {
-                const progress = (totalCalories / dailyGoal) * 100;
-                document.getElementById('progressBar').value = progress;
-            }
+    <!-- Add the CSS code here inside the <style> tags -->
+    <style>
+        /* Global styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
         }
 
-        // Set the daily goal when the user inputs it
-        document.getElementById('goalCalories').addEventListener('change', function() {
-            dailyGoal = parseInt(this.value);
-            updateProgressBar(); // Recalculate progress immediately when goal is set
-        });
+        /* Form styles */
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin: 20px;
+        }
+
+        /* Input field and button styles */
+        input[type="text"], input[type="number"], button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Progress bar styling */
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background-color: #ddd;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .progress-bar-filled {
+            height: 100%;
+            background-color: #4caf50;
+            width: 0%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Your existing HTML content, like the form and progress bar, goes here -->
+    <form>
+        <label for="calories-input">Enter Calories:</label>
+        <input type="number" id="calories-input" placeholder="Enter calories" />
+        <button type="button" onclick="updateProgressBar()">Update Progress</button>
+    </form>
+
+    <div class="progress-bar">
+        <div class="progress-bar-filled" id="progress"></div>
+    </div>
+
+    <script>
+        // Function to update the progress bar
+        function updateProgressBar() {
+            const goal = 2000; // Example daily calorie goal
+            const enteredCalories = parseInt(document.getElementById("calories-input").value);
+
+            const progressPercentage = (enteredCalories / goal) * 100;
+
+            const progressBar = document.getElementById("progress");
+            progressBar.style.width = `${Math.min(progressPercentage, 100)}%`; // Limit to 100%
+        }
     </script>
 </body>
 </html>
