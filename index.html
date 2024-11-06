@@ -3,146 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calorie Tracker</title>
+    <title>Calorie and Macros Tracker</title>
     <style>
-        /* Basic styling for the website */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
+            background-color: #f4f4f4;
         }
 
         .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 300px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
-        input[type="number"], button {
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input {
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 4px;
-            border: 1px solid #ddd;
+            padding: 8px;
+            margin-top: 5px;
         }
 
         button {
-            background-color: #007BFF;
+            padding: 10px 20px;
+            background-color: #4CAF50;
             color: white;
+            border: none;
             cursor: pointer;
+            margin-top: 10px;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #45a049;
         }
 
-        /* Progress bar styling */
-        .progress-bar {
-            width: 300px;
-            height: 25px;
-            background-color: #ddd;
-            border-radius: 12px;
-            overflow: hidden;
+        .remaining-values {
+            margin-top: 30px;
+            background-color: #f1f1f1;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
 
-        .progress-bar-filled {
-            height: 100%;
-            background-color: #4caf50;
-            width: 0%;
-        }
-
-        /* Display section for remaining values */
-        .remaining-info {
-            margin-top: 20px;
-        }
-
-        .remaining-info div {
-            font-size: 18px;
+        h3 {
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <!-- Form to enter calorie, protein, carb, and fat info -->
-        <form>
-            <label for="calories-input">Enter Calories:</label>
-            <input type="number" id="calories-input" placeholder="Enter calories" />
+        <h1>Calorie & Macros Tracker</h1>
 
-            <label for="protein-input">Enter Protein (g):</label>
-            <input type="number" id="protein-input" placeholder="Enter protein" />
-
-            <label for="carbs-input">Enter Carbs (g):</label>
-            <input type="number" id="carbs-input" placeholder="Enter carbs" />
-
-            <label for="fat-input">Enter Fat (g):</label>
-            <input type="number" id="fat-input" placeholder="Enter fat" />
-
-            <button type="button" onclick="updateProgressBar()">Update Progress</button>
+        <!-- Form to input food data -->
+        <form id="foodForm">
+            <label for="food">Food Item:</label>
+            <input type="text" id="food" name="food" required>
+            <label for="calories">Calories:</label>
+            <input type="number" id="calories" name="calories" required>
+            <label for="protein">Protein (g):</label>
+            <input type="number" id="protein" name="protein" required>
+            <label for="carbs">Carbs (g):</label>
+            <input type="number" id="carbs" name="carbs" required>
+            <label for="fat">Fat (g):</label>
+            <input type="number" id="fat" name="fat" required>
+            <button type="submit">Add Food</button>
         </form>
 
-        <!-- Progress Bar -->
-        <div class="progress-bar">
-            <div class="progress-bar-filled" id="progress"></div>
+        <!-- Display the remaining values -->
+        <div id="remainingValues" class="remaining-values">
+            <h3>Remaining Values:</h3>
+            <p id="remainingCalories">Calories: 0</p>
+            <p id="remainingProtein">Protein: 0g</p>
+            <p id="remainingCarbs">Carbs: 0g</p>
+            <p id="remainingFat">Fat: 0g</p>
         </div>
 
-        <!-- Display remaining calories, protein, carbs, and fat -->
-        <div class="remaining-info">
-            <div id="remaining-calories">Remaining Calories: 0</div>
-            <div id="remaining-protein">Remaining Protein: 0g</div>
-            <div id="remaining-carbs">Remaining Carbs: 0g</div>
-            <div id="remaining-fat">Remaining Fat: 0g</div>
-        </div>
     </div>
 
     <script>
-        // Function to update progress and remaining values based on entered data
-        function updateProgressBar() {
-            const goalCalories = 2000; // Example goal for calories
-            const goalProtein = 150;   // Example goal for protein (grams)
-            const goalCarbs = 250;     // Example goal for carbs (grams)
-            const goalFat = 70;        // Example goal for fat (grams)
+        // Define the target daily intake values
+        const targetCalories = 2000;
+        const targetProtein = 150;  // in grams
+        const targetCarbs = 250;    // in grams
+        const targetFat = 70;       // in grams
 
-            // Get entered values
-            const enteredCalories = parseInt(document.getElementById("calories-input").value) || 0;
-            const enteredProtein = parseInt(document.getElementById("protein-input").value) || 0;
-            const enteredCarbs = parseInt(document.getElementById("carbs-input").value) || 0;
-            const enteredFat = parseInt(document.getElementById("fat-input").value) || 0;
+        // Initialize total values for calories, protein, carbs, and fat
+        let totalCalories = 0;
+        let totalProtein = 0;
+        let totalCarbs = 0;
+        let totalFat = 0;
 
-            // Calculate progress for calories
-            const progressPercentage = (enteredCalories / goalCalories) * 100;
+        // Get the form and remaining values section elements
+        const foodForm = document.getElementById('foodForm');
+        const remainingCalories = document.getElementById('remainingCalories');
+        const remainingProtein = document.getElementById('remainingProtein');
+        const remainingCarbs = document.getElementById('remainingCarbs');
+        const remainingFat = document.getElementById('remainingFat');
 
-            // Update progress bar width
-            const progressBar = document.getElementById("progress");
-            progressBar.style.width = `${Math.min(progressPercentage, 100)}%`; // Limit to 100%
-
-            // Display remaining values
-            document.getElementById("remaining-calories").textContent = `Remaining Calories: ${goalCalories - enteredCalories}`;
-            document.getElementById("remaining-protein").textContent = `Remaining Protein: ${goalProtein - enteredProtein}g`;
-            document.getElementById("remaining-carbs").textContent = `Remaining Carbs: ${goalCarbs - enteredCarbs}g`;
-            document.getElementById("remaining-fat").textContent = `Remaining Fat: ${goalFat - enteredFat}g`;
-
-            // For debugging, log the entered values
-            console.log(`Calories: ${enteredCalories}, Protein: ${enteredProtein}, Carbs: ${enteredCarbs}, Fat: ${enteredFat}`);
+        // Update the remaining values in the display
+        function updateRemainingValues() {
+            remainingCalories.textContent = `Calories: ${targetCalories - totalCalories}`;
+            remainingProtein.textContent = `Protein: ${targetProtein - totalProtein}g`;
+            remainingCarbs.textContent = `Carbs: ${targetCarbs - totalCarbs}g`;
+            remainingFat.textContent = `Fat: ${targetFat - totalFat}g`;
         }
-    </script>
 
+        // Add food entry to the totals
+        foodForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const food = document.getElementById('food').value;
+            const calories = parseInt(document.getElementById('calories').value);
+            const protein = parseInt(document.getElementById('protein').value);
+            const carbs = parseInt(document.getElementById('carbs').value);
+            const fat = parseInt(document.getElementById('fat').value);
+
+            // Add values to totals
+            totalCalories += calories;
+            totalProtein += protein;
+            totalCarbs += carbs;
+            totalFat += fat;
+
+            // Clear the form fields
+            foodForm.reset();
+
+            // Update the remaining values
+            updateRemainingValues();
+        });
+    </script>
 </body>
 </html>
 
