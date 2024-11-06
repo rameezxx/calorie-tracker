@@ -3,95 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calorie and Macros Tracker</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        form {
-            margin-bottom: 30px;
-        }
-
-        label {
-            display: block;
-            margin-top: 10px;
-        }
-
-        input {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-        }
-
-        button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        .remaining-values {
-            margin-top: 30px;
-            background-color: #f1f1f1;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-
-        h3 {
-            margin-bottom: 10px;
-        }
-    </style>
+    <title>Calorie Tracker</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Calorie & Macros Tracker</h1>
+    <!-- Form for adding food -->
+    <h1>Calorie Tracker</h1>
+    <form id="foodForm">
+        <input type="text" id="food" placeholder="Food Name" required>
+        <input type="number" id="calories" placeholder="Calories" required>
+        <input type="number" id="protein" placeholder="Protein (g)" required>
+        <input type="number" id="carbs" placeholder="Carbs (g)" required>
+        <input type="number" id="fat" placeholder="Fat (g)" required>
+        <button type="submit">Add Food</button>
+    </form>
 
-        <!-- Form to input food data -->
-        <form id="foodForm">
-            <label for="food">Food Item:</label>
-            <input type="text" id="food" name="food" required>
-            <label for="calories">Calories:</label>
-            <input type="number" id="calories" name="calories" required>
-            <label for="protein">Protein (g):</label>
-            <input type="number" id="protein" name="protein" required>
-            <label for="carbs">Carbs (g):</label>
-            <input type="number" id="carbs" name="carbs" required>
-            <label for="fat">Fat (g):</label>
-            <input type="number" id="fat" name="fat" required>
-            <button type="submit">Add Food</button>
-        </form>
-
-        <!-- Display the remaining values -->
-        <div id="remainingValues" class="remaining-values">
-            <h3>Remaining Values:</h3>
-            <p id="remainingCalories">Calories: 0</p>
-            <p id="remainingProtein">Protein: 0g</p>
-            <p id="remainingCarbs">Carbs: 0g</p>
-            <p id="remainingFat">Fat: 0g</p>
-        </div>
-
+    <!-- Section to display remaining values -->
+    <div id="remainingValues">
+        <p id="remainingCalories">Calories: 2000</p>
+        <p id="remainingProtein">Protein: 150g</p>
+        <p id="remainingCarbs">Carbs: 250g</p>
+        <p id="remainingFat">Fat: 70g</p>
     </div>
 
+    <!-- JavaScript to handle the functionality -->
     <script>
         // Define the target daily intake values
         const targetCalories = 2000;
@@ -104,6 +38,14 @@
         let totalProtein = 0;
         let totalCarbs = 0;
         let totalFat = 0;
+
+        // Check if data is stored in localStorage when the page loads
+        if (localStorage.getItem('totalCalories')) {
+            totalCalories = parseInt(localStorage.getItem('totalCalories'));
+            totalProtein = parseInt(localStorage.getItem('totalProtein'));
+            totalCarbs = parseInt(localStorage.getItem('totalCarbs'));
+            totalFat = parseInt(localStorage.getItem('totalFat'));
+        }
 
         // Get the form and remaining values section elements
         const foodForm = document.getElementById('foodForm');
@@ -118,6 +60,14 @@
             remainingProtein.textContent = `Protein: ${targetProtein - totalProtein}g`;
             remainingCarbs.textContent = `Carbs: ${targetCarbs - totalCarbs}g`;
             remainingFat.textContent = `Fat: ${targetFat - totalFat}g`;
+        }
+
+        // Save the total values to localStorage
+        function saveData() {
+            localStorage.setItem('totalCalories', totalCalories);
+            localStorage.setItem('totalProtein', totalProtein);
+            localStorage.setItem('totalCarbs', totalCarbs);
+            localStorage.setItem('totalFat', totalFat);
         }
 
         // Add food entry to the totals
@@ -139,10 +89,15 @@
             // Clear the form fields
             foodForm.reset();
 
-            // Update the remaining values
+            // Update the remaining values and save to localStorage
             updateRemainingValues();
+            saveData();
         });
+
+        // Update remaining values on page load
+        updateRemainingValues();
     </script>
 </body>
 </html>
+
 
