@@ -105,6 +105,25 @@
         <button type="button" id="updateButton" style="display:none;">Update Food</button>
     </form>
 
+    <!-- Daily Goal Form -->
+    <form id="goalForm">
+        <h2>Set Your Daily Goals</h2>
+
+        <label for="goalCalories">Goal Calories:</label>
+        <input type="number" id="goalCalories" required>
+
+        <label for="goalProtein">Goal Protein (g):</label>
+        <input type="number" id="goalProtein" required>
+
+        <label for="goalCarbs">Goal Carbs (g):</label>
+        <input type="number" id="goalCarbs" required>
+
+        <label for="goalFat">Goal Fat (g):</label>
+        <input type="number" id="goalFat" required>
+
+        <button type="submit">Set Goals</button>
+    </form>
+
     <!-- Remaining Values Display -->
     <div class="remaining-values">
         <h3>Remaining Intake</h3>
@@ -129,11 +148,6 @@
     <button id="resetButton">Reset All Data</button>
 
     <script>
-        const targetCalories = 2000;
-        const targetProtein = 150;
-        const targetCarbs = 250;
-        const targetFat = 70;
-
         let totalCalories = 0;
         let totalProtein = 0;
         let totalCarbs = 0;
@@ -141,15 +155,25 @@
         let foodList = [];
         let editIndex = null;
 
+        let targetCalories = 2000;
+        let targetProtein = 150;
+        let targetCarbs = 250;
+        let targetFat = 70;
+
         if (localStorage.getItem('totalCalories')) {
             totalCalories = parseInt(localStorage.getItem('totalCalories'));
             totalProtein = parseInt(localStorage.getItem('totalProtein'));
             totalCarbs = parseInt(localStorage.getItem('totalCarbs'));
             totalFat = parseInt(localStorage.getItem('totalFat'));
             foodList = JSON.parse(localStorage.getItem('foodList')) || [];
+            targetCalories = parseInt(localStorage.getItem('goalCalories')) || targetCalories;
+            targetProtein = parseInt(localStorage.getItem('goalProtein')) || targetProtein;
+            targetCarbs = parseInt(localStorage.getItem('goalCarbs')) || targetCarbs;
+            targetFat = parseInt(localStorage.getItem('goalFat')) || targetFat;
         }
 
         const foodForm = document.getElementById('foodForm');
+        const goalForm = document.getElementById('goalForm');
         const remainingCalories = document.getElementById('remainingCalories');
         const remainingProtein = document.getElementById('remainingProtein');
         const remainingCarbs = document.getElementById('remainingCarbs');
@@ -175,6 +199,10 @@
             localStorage.setItem('totalCarbs', totalCarbs);
             localStorage.setItem('totalFat', totalFat);
             localStorage.setItem('foodList', JSON.stringify(foodList));
+            localStorage.setItem('goalCalories', targetCalories);
+            localStorage.setItem('goalProtein', targetProtein);
+            localStorage.setItem('goalCarbs', targetCarbs);
+            localStorage.setItem('goalFat', targetFat);
         }
 
         function showAlert(message, alertElement) {
@@ -202,15 +230,11 @@
                 totalFat -= oldFood.fat;
 
                 foodList[editIndex] = { name: foodName, calories, protein, carbs, fat };
-
+                editIndex = null;
                 addButton.style.display = 'block';
                 updateButton.style.display = 'none';
-                editIndex = null;
-
-                showAlert('Food updated successfully!', alertSuccess);
             } else {
                 foodList.push({ name: foodName, calories, protein, carbs, fat });
-                showAlert('Food added successfully!', alertSuccess);
             }
 
             totalCalories += calories;
@@ -218,17 +242,28 @@
             totalCarbs += carbs;
             totalFat += fat;
 
-            foodForm.reset();
-            document.getElementById('food').focus();
-
             updateRemainingValues();
             saveData();
             renderFoodList();
+
+            showAlert('Food added successfully!', alertSuccess);
+
+            foodForm.reset();
+        });
+
+        goalForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            targetCalories = parseInt(document.getElementById('goalCalories').value);
+            targetProtein = parseInt(document.getElementById('goalProtein').value);
+            targetCarbs = parseInt(document.getElementById('goalCarbs').value);
+            targetFat = parseInt(document.getElementById('goalFat').value);
+
+            updateRemainingValues();
+            saveData();
         });
 
         resetButton.addEventListener('click', function() {
-            localStorage.clear();
-
             totalCalories = 0;
             totalProtein = 0;
             totalCarbs = 0;
@@ -236,20 +271,21 @@
             foodList = [];
 
             updateRemainingValues();
-            foodListContainer.innerHTML = '';
+            saveData();
+            renderFoodList();
 
             showAlert('All data reset successfully!', alertReset);
         });
 
-        function renderFoodList(filteredFoodList = foodList) {
+        function renderFoodList(filteredList = foodList) {
             foodListContainer.innerHTML = '';
-
-            filteredFoodList.forEach((food, index) => {
+            filteredList.forEach((food, index) => {
                 const foodItem = document.createElement('div');
                 foodItem.classList.add('food-item');
                 foodItem.innerHTML = `
-                    <strong>${food.name}</strong><br>
-                    Calories: ${food.calories}, Protein: ${food.protein}g, Carbs: ${food.carbs}g, Fat: ${food.fat}g
+                    <p><strong>${food.name}</strong></p>
+                    <p>Calories: ${food.calories}</p>
+                    <p>Protein: ${food.protein}g, Carbs: ${food.carbs}g, Fat: ${food.fat}g</p>
                     <div class="edit-delete-btns">
                         <button class="edit-btn" onclick="editFood(${index})">Edit</button>
                         <button class="delete-btn" onclick="deleteFood(${index})">Delete</button>
@@ -299,6 +335,7 @@
 
 </body>
 </html>
+
 
 
 
