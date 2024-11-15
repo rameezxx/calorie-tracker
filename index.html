@@ -74,6 +74,9 @@
         .delete-btn:hover {
             background-color: #e53935;
         }
+        .chart-container {
+            margin-top: 30px;
+        }
     </style>
 </head>
 <body>
@@ -144,8 +147,16 @@
         <div id="foodListContainer"></div>
     </div>
 
+    <!-- Pie Chart for Nutrient Breakdown -->
+    <div class="chart-container">
+        <canvas id="nutrientChart"></canvas>
+    </div>
+
     <!-- Reset Button -->
     <button id="resetButton">Reset All Data</button>
+
+    <!-- Include Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         let totalCalories = 0;
@@ -185,6 +196,8 @@
         const alertReset = document.getElementById('alertReset');
         const addButton = document.getElementById('addButton');
         const updateButton = document.getElementById('updateButton');
+
+        let nutrientChart = null;
 
         function updateRemainingValues() {
             remainingCalories.textContent = `Calories: ${targetCalories - totalCalories}`;
@@ -245,6 +258,7 @@
             updateRemainingValues();
             saveData();
             renderFoodList();
+            updateNutrientChart();
 
             showAlert('Food added successfully!', alertSuccess);
 
@@ -261,6 +275,7 @@
 
             updateRemainingValues();
             saveData();
+            updateNutrientChart();
         });
 
         resetButton.addEventListener('click', function() {
@@ -273,6 +288,7 @@
             updateRemainingValues();
             saveData();
             renderFoodList();
+            updateNutrientChart();
 
             showAlert('All data reset successfully!', alertReset);
         });
@@ -321,6 +337,7 @@
             updateRemainingValues();
             saveData();
             renderFoodList();
+            updateNutrientChart();
         }
 
         function filterFoodList() {
@@ -329,12 +346,37 @@
             renderFoodList(filtered);
         }
 
+        function updateNutrientChart() {
+            if (nutrientChart) {
+                nutrientChart.destroy();
+            }
+            
+            const ctx = document.getElementById('nutrientChart').getContext('2d');
+            nutrientChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Calories', 'Protein', 'Carbs', 'Fat'],
+                    datasets: [{
+                        label: 'Nutrient Breakdown',
+                        data: [totalCalories, totalProtein, totalCarbs, totalFat],
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                }
+            });
+        }
+
         updateRemainingValues();
         renderFoodList();
+        updateNutrientChart();
     </script>
 
 </body>
 </html>
+
 
 
 
