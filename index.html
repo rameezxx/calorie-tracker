@@ -4,231 +4,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Tracker</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f4f4f9;
-        }
-        input, button {
-            margin: 10px 0;
-            padding: 10px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .remaining-values {
-            margin-top: 20px;
-        }
-        .food-list {
-            margin-top: 20px;
-        }
-        .food-item {
-            background-color: #fff;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-        }
-        #searchBox {
-            margin-bottom: 20px;
-        }
-        .alert {
-            display: none;
-            padding: 10px;
-            margin: 10px 0;
-            color: white;
-        }
-        .alert-success {
-            background-color: #4CAF50;
-        }
-        .alert-danger {
-            background-color: #f44336;
-        }
-        .edit-delete-btns {
-            display: flex;
-            justify-content: space-between;
-        }
-        .edit-btn, .delete-btn {
-            background-color: #2196F3;
-            color: white;
-            border: none;
-            padding: 5px;
-            cursor: pointer;
-        }
-        .delete-btn {
-            background-color: #f44336;
-        }
-        .edit-btn:hover {
-            background-color: #1e88e5;
-        }
-        .delete-btn:hover {
-            background-color: #e53935;
-        }
-        .chart-container {
-            margin-top: 30px;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-    <h1>Food Tracker</h1>
+    <div class="container">
+        <h1>Food Tracker</h1>
 
-    <!-- Alert Messages -->
-    <div id="alertSuccess" class="alert alert-success" style="display: none;">Food added successfully!</div>
-    <div id="alertReset" class="alert alert-danger" style="display: none;">All data reset successfully!</div>
+        <form id="foodForm">
+            <input type="text" id="food" placeholder="Food Name" required>
+            <input type="number" id="calories" placeholder="Calories" required>
+            <input type="number" id="protein" placeholder="Protein (g)" required>
+            <input type="number" id="carbs" placeholder="Carbs (g)" required>
+            <input type="number" id="fat" placeholder="Fat (g)" required>
+            <button type="submit" id="addButton">Add Food</button>
+            <button type="button" id="updateButton" style="display:none;">Update Food</button>
+        </form>
 
-    <!-- Food Entry Form -->
-    <form id="foodForm">
-        <label for="food">Food Name:</label>
-        <input type="text" id="food" required>
+        <div id="alertSuccess" class="alert" style="display:none;"></div>
+        <div id="alertReset" class="alert" style="display:none;"></div>
 
-        <label for="calories">Calories:</label>
-        <input type="number" id="calories" required>
-
-        <label for="protein">Protein (g):</label>
-        <input type="number" id="protein" required>
-
-        <label for="carbs">Carbs (g):</label>
-        <input type="number" id="carbs" required>
-
-        <label for="fat">Fat (g):</label>
-        <input type="number" id="fat" required>
-
-        <button type="submit" id="addButton">Add Food</button>
-        <button type="button" id="updateButton" style="display:none;">Update Food</button>
-    </form>
-
-    <!-- Daily Goal Form -->
-    <form id="goalForm">
-        <h2>Set Your Daily Goals</h2>
-
-        <label for="goalCalories">Goal Calories:</label>
-        <input type="number" id="goalCalories" required>
-
-        <label for="goalProtein">Goal Protein (g):</label>
-        <input type="number" id="goalProtein" required>
-
-        <label for="goalCarbs">Goal Carbs (g):</label>
-        <input type="number" id="goalCarbs" required>
-
-        <label for="goalFat">Goal Fat (g):</label>
-        <input type="number" id="goalFat" required>
-
-        <button type="submit">Set Goals</button>
-    </form>
-
-    <!-- Remaining Values Display -->
-    <div class="remaining-values">
-        <h3>Remaining Intake</h3>
-        <p id="remainingCalories">Calories: 0</p>
-        <p id="remainingProtein">Protein: 0g</p>
-        <p id="remainingCarbs">Carbs: 0g</p>
-        <p id="remainingFat">Fat: 0g</p>
-    </div>
-
-    <!-- Search Bar -->
-    <div>
-        <input type="text" id="searchBox" placeholder="Search Food" oninput="filterFoodList()">
-    </div>
-
-    <!-- Food List Display -->
-    <div class="food-list">
         <h3>Food List</h3>
         <div id="foodListContainer"></div>
-    </div>
 
-    <!-- Pie Chart for Nutrient Breakdown -->
-    <div class="chart-container">
+        <form id="goalForm">
+            <h3>Set Nutritional Goals</h3>
+            <input type="number" id="goalCalories" placeholder="Goal Calories" required>
+            <input type="number" id="goalProtein" placeholder="Goal Protein (g)" required>
+            <input type="number" id="goalCarbs" placeholder="Goal Carbs (g)" required>
+            <input type="number" id="goalFat" placeholder="Goal Fat (g)" required>
+            <button type="submit">Set Goals</button>
+        </form>
+
+        <button id="resetButton">Reset Data</button>
+
+        <div class="progress-container">
+            <label for="goalCalories">Progress:</label>
+            <progress id="progressBar" value="0" max="100"></progress>
+        </div>
+
+        <h3>Nutrient Breakdown</h3>
         <canvas id="nutrientChart"></canvas>
     </div>
 
-    <!-- Reset Button -->
-    <button id="resetButton">Reset All Data</button>
-
-    <!-- Include Chart.js Library -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script>
-        let totalCalories = 0;
-        let totalProtein = 0;
-        let totalCarbs = 0;
-        let totalFat = 0;
-        let foodList = [];
-        let editIndex = null;
-
-        let targetCalories = 2000;
-        let targetProtein = 150;
-        let targetCarbs = 250;
-        let targetFat = 70;
-
-        if (localStorage.getItem('totalCalories')) {
-            totalCalories = parseInt(localStorage.getItem('totalCalories'));
-            totalProtein = parseInt(localStorage.getItem('totalProtein'));
-            totalCarbs = parseInt(localStorage.getItem('totalCarbs'));
-            totalFat = parseInt(localStorage.getItem('totalFat'));
-            foodList = JSON.parse(localStorage.getItem('foodList')) || [];
-            targetCalories = parseInt(localStorage.getItem('goalCalories')) || targetCalories;
-            targetProtein = parseInt(localStorage.getItem('goalProtein')) || targetProtein;
-            targetCarbs = parseInt(localStorage.getItem('goalCarbs')) || targetCarbs;
-            targetFat = parseInt(localStorage.getItem('goalFat')) || targetFat;
-        }
-
         const foodForm = document.getElementById('foodForm');
         const goalForm = document.getElementById('goalForm');
-        const remainingCalories = document.getElementById('remainingCalories');
-        const remainingProtein = document.getElementById('remainingProtein');
-        const remainingCarbs = document.getElementById('remainingCarbs');
-        const remainingFat = document.getElementById('remainingFat');
         const foodListContainer = document.getElementById('foodListContainer');
-        const resetButton = document.getElementById('resetButton');
-        const searchBox = document.getElementById('searchBox');
-        const alertSuccess = document.getElementById('alertSuccess');
-        const alertReset = document.getElementById('alertReset');
+        const progressBar = document.getElementById('progressBar');
         const addButton = document.getElementById('addButton');
         const updateButton = document.getElementById('updateButton');
+        const resetButton = document.getElementById('resetButton');
+        const alertSuccess = document.getElementById('alertSuccess');
+        const alertReset = document.getElementById('alertReset');
+        const searchBox = document.getElementById('searchBox');
 
-        let nutrientChart = null;
+        let foodList = JSON.parse(localStorage.getItem('foodList')) || [];
+        let targetCalories = JSON.parse(localStorage.getItem('targetCalories')) || 0;
+        let targetProtein = JSON.parse(localStorage.getItem('targetProtein')) || 0;
+        let targetCarbs = JSON.parse(localStorage.getItem('targetCarbs')) || 0;
+        let targetFat = JSON.parse(localStorage.getItem('targetFat')) || 0;
 
-        function updateRemainingValues() {
-            remainingCalories.textContent = `Calories: ${targetCalories - totalCalories}`;
-            remainingProtein.textContent = `Protein: ${targetProtein - totalProtein}g`;
-            remainingCarbs.textContent = `Carbs: ${targetCarbs - totalCarbs}g`;
-            remainingFat.textContent = `Fat: ${targetFat - totalFat}g`;
-        }
+        let totalCalories = foodList.reduce((sum, food) => sum + food.calories, 0);
+        let totalProtein = foodList.reduce((sum, food) => sum + food.protein, 0);
+        let totalCarbs = foodList.reduce((sum, food) => sum + food.carbs, 0);
+        let totalFat = foodList.reduce((sum, food) => sum + food.fat, 0);
 
-        function saveData() {
-            localStorage.setItem('totalCalories', totalCalories);
-            localStorage.setItem('totalProtein', totalProtein);
-            localStorage.setItem('totalCarbs', totalCarbs);
-            localStorage.setItem('totalFat', totalFat);
-            localStorage.setItem('foodList', JSON.stringify(foodList));
-            localStorage.setItem('goalCalories', targetCalories);
-            localStorage.setItem('goalProtein', targetProtein);
-            localStorage.setItem('goalCarbs', targetCarbs);
-            localStorage.setItem('goalFat', targetFat);
-        }
+        let editIndex = null;
 
-        function showAlert(message, alertElement) {
-            alertElement.textContent = message;
-            alertElement.style.display = 'block';
-            setTimeout(() => {
-                alertElement.style.display = 'none';
-            }, 2000);
-        }
+        // Load saved data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateRemainingValues();
+            renderFoodList();
+            updateNutrientChart();
+            updateProgressBar();
+        });
 
         foodForm.addEventListener('submit', function(event) {
             event.preventDefault();
-
             const foodName = document.getElementById('food').value;
             const calories = parseInt(document.getElementById('calories').value);
             const protein = parseInt(document.getElementById('protein').value);
@@ -259,15 +113,14 @@
             saveData();
             renderFoodList();
             updateNutrientChart();
+            updateProgressBar();
 
             showAlert('Food added successfully!', alertSuccess);
-
             foodForm.reset();
         });
 
         goalForm.addEventListener('submit', function(event) {
             event.preventDefault();
-
             targetCalories = parseInt(document.getElementById('goalCalories').value);
             targetProtein = parseInt(document.getElementById('goalProtein').value);
             targetCarbs = parseInt(document.getElementById('goalCarbs').value);
@@ -276,6 +129,7 @@
             updateRemainingValues();
             saveData();
             updateNutrientChart();
+            updateProgressBar();
         });
 
         resetButton.addEventListener('click', function() {
@@ -289,23 +143,22 @@
             saveData();
             renderFoodList();
             updateNutrientChart();
+            updateProgressBar();
 
             showAlert('All data reset successfully!', alertReset);
         });
 
-        function renderFoodList(filteredList = foodList) {
+        function renderFoodList() {
             foodListContainer.innerHTML = '';
-            filteredList.forEach((food, index) => {
+            foodList.forEach((food, index) => {
                 const foodItem = document.createElement('div');
                 foodItem.classList.add('food-item');
                 foodItem.innerHTML = `
                     <p><strong>${food.name}</strong></p>
                     <p>Calories: ${food.calories}</p>
                     <p>Protein: ${food.protein}g, Carbs: ${food.carbs}g, Fat: ${food.fat}g</p>
-                    <div class="edit-delete-btns">
-                        <button class="edit-btn" onclick="editFood(${index})">Edit</button>
-                        <button class="delete-btn" onclick="deleteFood(${index})">Delete</button>
-                    </div>
+                    <button onclick="editFood(${index})">Edit</button>
+                    <button onclick="deleteFood(${index})">Delete</button>
                 `;
                 foodListContainer.appendChild(foodItem);
             });
@@ -338,44 +191,59 @@
             saveData();
             renderFoodList();
             updateNutrientChart();
+            updateProgressBar();
         }
 
-        function filterFoodList() {
-            const query = searchBox.value.toLowerCase();
-            const filtered = foodList.filter(food => food.name.toLowerCase().includes(query));
-            renderFoodList(filtered);
+        function updateRemainingValues() {
+            document.getElementById('remainingCalories').textContent = targetCalories - totalCalories;
+            document.getElementById('remainingProtein').textContent = targetProtein - totalProtein;
+            document.getElementById('remainingCarbs').textContent = targetCarbs - totalCarbs;
+            document.getElementById('remainingFat').textContent = targetFat - totalFat;
+        }
+
+        function updateProgressBar() {
+            const progress = (totalCalories / targetCalories) * 100;
+            progressBar.value = progress;
+        }
+
+        function saveData() {
+            localStorage.setItem('foodList', JSON.stringify(foodList));
+            localStorage.setItem('targetCalories', targetCalories);
+            localStorage.setItem('targetProtein', targetProtein);
+            localStorage.setItem('targetCarbs', targetCarbs);
+            localStorage.setItem('targetFat', targetFat);
         }
 
         function updateNutrientChart() {
-            if (nutrientChart) {
-                nutrientChart.destroy();
-            }
-            
             const ctx = document.getElementById('nutrientChart').getContext('2d');
-            nutrientChart = new Chart(ctx, {
+            const chartData = {
+                labels: ['Calories', 'Protein', 'Carbs', 'Fat'],
+                datasets: [{
+                    label: 'Nutrient Breakdown',
+                    data: [totalCalories, totalProtein, totalCarbs, totalFat],
+                    backgroundColor: ['#FF5733', '#4CAF50', '#FFC107', '#3F51B5'],
+                    borderColor: ['#FF5733', '#4CAF50', '#FFC107', '#3F51B5'],
+                    borderWidth: 1
+                }]
+            };
+
+            new Chart(ctx, {
                 type: 'pie',
-                data: {
-                    labels: ['Calories', 'Protein', 'Carbs', 'Fat'],
-                    datasets: [{
-                        label: 'Nutrient Breakdown',
-                        data: [totalCalories, totalProtein, totalCarbs, totalFat],
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50'],
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                }
+                data: chartData
             });
         }
 
-        updateRemainingValues();
-        renderFoodList();
-        updateNutrientChart();
+        function showAlert(message, element) {
+            element.textContent = message;
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 3000);
+        }
     </script>
-
 </body>
 </html>
+
 
 
 
